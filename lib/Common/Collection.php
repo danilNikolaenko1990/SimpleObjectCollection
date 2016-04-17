@@ -24,11 +24,13 @@ class Collection implements ICollection
     public function add($object)
     {
         $this->elements[] = $object;
-        // TODO: Implement add() method.
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
-        // TODO: Implement count() method.
+        return count($this->elements);
     }
 }

@@ -33,6 +33,18 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($testObj2, $elements[1]);
     }
 
+    public function testCount_GivenCount_ReturnsCountObjects()
+    {
+        $collection = new Collection();
+        $testObj1 = $this->getTestObject(1);
+        $collection->add($testObj1);
+
+        $this->assertEquals($collection->count(), 1);
+        $testObj2 = $this->getTestObject(2);
+        $collection->add($testObj2);
+        $this->assertEquals($collection->count(), 2);
+    }
+
     protected function getTestObject($id)
     {
         return new TestObject($id);
