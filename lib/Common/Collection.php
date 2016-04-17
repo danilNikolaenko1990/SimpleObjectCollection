@@ -4,6 +4,8 @@ namespace lib\Common;
 
 class Collection implements ICollection
 {
+    protected $elements = [];
+
     public function setClassName($className)
     {
         // TODO: Implement setClassName() method.
@@ -21,6 +23,12 @@ class Collection implements ICollection
 
     public function add($object)
     {
+        $this->elements[] = $object;
         // TODO: Implement add() method.
+    }
+
+    public function count()
+    {
+        // TODO: Implement count() method.
     }
 }

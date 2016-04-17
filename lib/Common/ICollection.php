@@ -25,4 +25,9 @@ interface ICollection
      * @return mixed
      */
     public function add($object);
+
+    /**
+     * @return integer
+     */
+    public function count();
 }
