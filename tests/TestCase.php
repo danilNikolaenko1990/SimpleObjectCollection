@@ -171,6 +171,32 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testTypeHintByClassNameThrowsException()
+    {
+        $testObject = $this->getTestObject(1);
+
+        $collection = new Collection();
+        $collection->setClassName(TestObject::class);
+
+        $collection->add($testObject);
+        $collection->add(new WrongTestObject());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testTypeHintByClassNameInConstructorThrowsException()
+    {
+        $testObjects = $this->getTestObjects(5);
+        $wrongObj = new WrongTestObject();
+        array_push($testObjects, $wrongObj);
+        new Collection($testObjects, TestObject::class);
+
+    }
+
+    /**
      * @param $id
      * @return TestObject
      */
@@ -213,5 +239,14 @@ class TestObject
     public function getId()
     {
         return $this->id;
+    }
+};
+
+
+class WrongTestObject
+{
+    public function getId()
+    {
+        return 1;
     }
 }

@@ -8,23 +8,33 @@ namespace lib\Common;
  */
 class Collection implements ICollection, \Iterator, \Countable
 {
+    /** @var array */
     protected $elements = [];
 
+    /** @var array */
     protected $arrayContainer = [];
 
+    /** @var int */
     protected $position = 0;
+
+    /** @var string */
+    protected $className = null;
 
     /**
      * collect array of the objects
-     * @param mixed $data
+     * @param array|object $data
+     * @param string $className
      */
-    public function __construct($data = null)
+    public function __construct($data = null, $className = '')
     {
         $this->position = 0;
 
         if ($data == null) {
             return;
         }
+
+        $this->setClassName($className);
+
         if (is_object($data)) {
             $this->add($data);
             return;
@@ -39,9 +49,17 @@ class Collection implements ICollection, \Iterator, \Countable
             'argument must be object or array of the objects, ' . gettype($data) . ' given ' . __METHOD__);
     }
 
-    public function setClassName($className)
+    /**
+     * @param string $className
+     * @return Collection
+     */
+    public function setClassName($className = '')
     {
-        // TODO: Implement setClassName() method.
+        if (!empty($className)) {
+            $this->className = $className;
+        }
+
+        return $this;
     }
 
     /**
@@ -84,6 +102,14 @@ class Collection implements ICollection, \Iterator, \Countable
         if (!in_array('getId', get_class_methods($object))) {
             throw new \InvalidArgumentException('object must have getId() method ' . __METHOD__);
         };
+
+        if (!empty($this->className)) {
+            if (!($object instanceOf $this->className)) {
+                throw new \InvalidArgumentException(
+                    'argument must be instance of ' . $this->className  . ', in ' . __METHOD__
+                );
+            }
+        }
 
         $this->elements[$object->getId()] = $object;
 
