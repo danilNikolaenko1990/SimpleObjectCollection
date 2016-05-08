@@ -161,6 +161,15 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($testObjects), $collection->count());
     }
 
+    public function testCount()
+    {
+        $testObjects = $this->getTestObjects($quantity = 10);
+
+        $collection = new Collection($testObjects);
+
+        $this->assertEquals(count($testObjects), count($collection));
+    }
+
     /**
      * @param $id
      * @return TestObject
