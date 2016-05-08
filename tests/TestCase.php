@@ -7,7 +7,6 @@ use \lib\Common\Collection;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-
     public function testAdd_GivenAddsIntoCollection_elementsFills()
     {
         $collection = new Collection();
@@ -129,8 +128,19 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     public function test_Iterator()
     {
-        $testObjects = $this->getTestObjects(10);
+        $testObjects = $this->getTestObjects($quantity = 10);
 
+        $collection = new Collection($testObjects);
+
+        $iterationCount = 0;
+        foreach ($collection as $object) {
+            $iterationCount++;
+            $this->assertInstanceOf(TestObject::class, $object);
+        }
+
+        if ($iterationCount !== $quantity) {
+            $this->fail('there is no one iteration');
+        }
     }
 
     public function testCollectOneObjectByConstructor()
@@ -167,7 +177,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getTestObjects($quantity = 1)
     {
         $testObjects = [];
-        for ($k = 0; $k < $quantity; $k++) {
+        for ($k = 1; $k <= $quantity; $k++) {
             $testObjects[] = $this->getTestObject($k);
         }
 

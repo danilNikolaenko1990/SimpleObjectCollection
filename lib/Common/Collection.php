@@ -6,12 +6,25 @@ namespace lib\Common;
  * Class Collection
  * @package lib\Common
  */
-class Collection implements ICollection
+class Collection implements ICollection, \Iterator, \Countable
 {
     protected $elements = [];
 
+    protected $arrayContainer = [];
+
+    protected $position = 0;
+
+    /**
+     * collect array of the objects
+     * @param mixed $data
+     */
     public function __construct($data = null)
     {
+        $this->position = 0;
+
+        if ($data == null) {
+            return;
+        }
         if (is_object($data)) {
             $this->add($data);
             return;
@@ -50,7 +63,11 @@ class Collection implements ICollection
      */
     public function remove($id)
     {
-        unset($this->elements[$id]);
+        if ($this->elements[$id]) {
+            unset($this->elements[$id]);
+            $this->positionMapInitialize();
+        }
+
         return $this;
     }
 
@@ -69,6 +86,9 @@ class Collection implements ICollection
         };
 
         $this->elements[$object->getId()] = $object;
+
+        $this->positionMapInitialize();
+
         return $this;
     }
 
@@ -78,5 +98,35 @@ class Collection implements ICollection
     public function count()
     {
         return count($this->elements);
+    }
+
+    public function current()
+    {
+        return $this->arrayContainer[$this->position];
+    }
+
+    public function next()
+    {
+        ++$this->position;
+    }
+
+    public function key()
+    {
+        return $this->position;
+    }
+
+    public function valid()
+    {
+        return isset($this->arrayContainer[$this->position]);
+    }
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    protected function positionMapInitialize()
+    {
+        $this->arrayContainer = array_values($this->elements);
     }
 }
