@@ -64,7 +64,7 @@ class Collection implements ICollection, \Iterator, \Countable
     }
 
     /**
-     * @param $id
+     * @param string|int $id
      * @return object|null
      */
     public function find($id)
@@ -72,8 +72,8 @@ class Collection implements ICollection, \Iterator, \Countable
         if (array_key_exists($id, $this->elements)) {
             return $this->elements[$id];
         }
-        return null;
 
+        return null;
     }
 
     /**
