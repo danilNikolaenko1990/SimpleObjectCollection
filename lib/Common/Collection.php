@@ -46,7 +46,8 @@ class Collection implements ICollection, \Iterator, \Countable
         }
 
         throw new \InvalidArgumentException(
-            'argument must be object or array of the objects, ' . gettype($data) . ' given ' . __METHOD__);
+            'argument must be object or array of the objects, ' . gettype($data) . ' given ' . __METHOD__
+        );
     }
 
     /**
@@ -106,7 +107,7 @@ class Collection implements ICollection, \Iterator, \Countable
         if (!empty($this->className)) {
             if (!($object instanceOf $this->className)) {
                 throw new \InvalidArgumentException(
-                    'argument must be instance of ' . $this->className  . ', in ' . __METHOD__
+                    'argument must be instance of ' . $this->className . ', in ' . __METHOD__
                 );
             }
         }
