@@ -200,6 +200,7 @@ class Collection implements ICollection, \Iterator, \Countable
     {
         if ($this->publicPropertyExists($object, 'id')) {
             return $object->id;
+            //todo переписать, нужно проверять на наличие public методов, а не всех подряд
         } elseif (method_exists($object, 'getId')) {
             return $object->getId();
         } elseif (method_exists($object, 'get_id')) {
