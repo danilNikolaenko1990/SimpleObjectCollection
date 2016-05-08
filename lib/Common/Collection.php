@@ -10,6 +10,22 @@ class Collection implements ICollection
 {
     protected $elements = [];
 
+    public function __construct($data = null)
+    {
+        if (is_object($data)) {
+            $this->add($data);
+            return;
+        } elseif (is_array($data)) {
+            foreach ($data as $object) {
+                $this->add($object);
+            }
+            return;
+        }
+
+        throw new \InvalidArgumentException(
+            'argument must be object or array of the objects, ' . gettype($data) . ' given ' . __METHOD__);
+    }
+
     public function setClassName($className)
     {
         // TODO: Implement setClassName() method.

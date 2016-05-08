@@ -52,6 +52,22 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $collection->add(1);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddGivenThrowExceptionIfArgumentConstructNotObjectNotArray_forExampleInteger()
+    {
+        new Collection(1);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddGivenThrowExceptionIfArgumentConstructNotObjectNotArray_forExampleArrayInteger()
+    {
+        new Collection([1]);
+    }
+
     public function testFind_GivenFindObjectById_ReturnsObject()
     {
         $collection = new Collection();
@@ -111,6 +127,30 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $collection->add($testObj1);
     }
 
+    public function test_Iterator()
+    {
+        $testObjects = $this->getTestObjects(10);
+
+    }
+
+    public function testCollectOneObjectByConstructor()
+    {
+        $testObject = $this->getTestObject($id = 1);
+
+        $collection = new Collection($testObject);
+
+        $this->assertEquals($testObject, $collection->find($id));
+    }
+
+    public function testCollectSomeObjectsByConstructor()
+    {
+        $testObjects = $this->getTestObjects($quantity = 10);
+
+        $collection = new Collection($testObjects);
+
+        $this->assertEquals(count($testObjects), $collection->count());
+    }
+
     /**
      * @param $id
      * @return TestObject
@@ -120,7 +160,19 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return new TestObject($id);
     }
 
+    /**
+     * @param int $quantity
+     * @return TestObject[]
+     */
+    protected function getTestObjects($quantity = 1)
+    {
+        $testObjects = [];
+        for ($k = 0; $k < $quantity; $k++) {
+            $testObjects[] = $this->getTestObject($k);
+        }
 
+        return $testObjects;
+    }
 }
 
 class TestObject
