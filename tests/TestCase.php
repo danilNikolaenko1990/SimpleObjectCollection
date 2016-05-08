@@ -13,10 +13,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $testObj1 = $this->getTestObject(1);
         $collection->add($testObj1);
 
-        $reflectedCollecton = new \ReflectionClass($collection);
-        $property = $reflectedCollecton->getProperty("elements");
-        $property->setAccessible(true);
-        $elements = $property->getValue($collection);
+        $elements = $this->getPropertyValue($collection, "elements");
 
         $this->assertNotEmpty($elements);
         $this->assertEquals($testObj1, $elements[$testObj1->getId()]);
@@ -24,10 +21,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $testObj2 = $this->getTestObject(2);
         $collection->add($testObj2);
         $this->assertCount(1, $elements);
-        $property = $reflectedCollecton->getProperty("elements");
-        $property->setAccessible(true);
 
-        $elements = $property->getValue($collection);
+        $elements = $this->getPropertyValue($collection, "elements");
 
         $this->assertCount(2, $elements);
         $this->assertEquals($testObj2, $elements[$testObj2->getId()]);
@@ -126,6 +121,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $collection->add($testObj1);
     }
 
+    public function testAddAddedObjectMustHaveIdProperty()
+    {
+        $collection = new Collection();
+        $testObj1 = (object)['id' => 1];
+        $collection->add($testObj1);
+
+        $elements = $this->getPropertyValue($collection, "elements");
+
+        $this->assertEquals($testObj1, $elements[$testObj1->id]);
+    }
+
     public function test_Iterator()
     {
         $testObjects = $this->getTestObjects($quantity = 10);
@@ -161,6 +167,33 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($testObjects), $collection->count());
     }
 
+    public function testAddBatch()
+    {
+        $testObject = $this->getTestObject(11);
+
+        $someTestObjects = $this->getTestObjects(10);
+
+        $collection = new Collection($testObject);
+
+        $collection->addBatch($someTestObjects);
+
+        $elements = $this->getPropertyValue($collection, 'elements');
+
+        $this->assertCount(11, $elements);
+
+    }
+
+    public function testResetCollectSomeObjects()
+    {
+        $testObjects = $this->getTestObjects($quantity = 10);
+
+        $collection = new Collection();
+
+        $collection->reset($testObjects);
+
+        $this->assertEquals(count($testObjects), $collection->count());
+    }
+
     public function testCount()
     {
         $testObjects = $this->getTestObjects($quantity = 10);
@@ -173,7 +206,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testTypeHintByClassNameThrowsException()
+    public function testSetClassNameThrowsExceptionIfWrongObject()
     {
         $testObject = $this->getTestObject(1);
 
@@ -182,6 +215,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $collection->add($testObject);
         $collection->add(new WrongTestObject());
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testSetClassNameThrowsExceptionIfCollectionNotEmty()
+    {
+        $testObject = $this->getTestObject(1);
+
+        $collection = new Collection($testObject);
+        $collection->setClassName(TestObject::class);
     }
 
     /**
@@ -217,6 +261,19 @@ class TestCase extends \PHPUnit_Framework_TestCase
         }
 
         return $testObjects;
+    }
+
+    /**
+     * @param $object
+     * @param $object
+     * @return mixed
+     */
+    protected function getPropertyValue($object, $propertyName)
+    {
+        $reflectedObject = new \ReflectionClass($object);
+        $property = $reflectedObject->getProperty($propertyName);
+        $property->setAccessible(true);
+        return $property->getValue($object);
     }
 }
 

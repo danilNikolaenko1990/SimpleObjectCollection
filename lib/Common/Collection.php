@@ -15,7 +15,7 @@ class Collection implements ICollection, \Iterator, \Countable
     protected $arrayContainer = [];
 
     /** @var int */
-    protected $position = 0;
+    protected $cursor = 0;
 
     /** @var string */
     protected $className = null;
@@ -27,22 +27,42 @@ class Collection implements ICollection, \Iterator, \Countable
      */
     public function __construct($data = null, $className = '')
     {
-        $this->position = 0;
+        $this->cursor = 0;
 
+        $this->reset($data, $className);
+    }
+
+    /**
+     * @param $elements
+     * @return Collection
+     */
+    public function addBatch($elements)
+    {
+        foreach ($elements as $object) {
+            $this->add($object);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $data
+     * @param string $className
+     * @return Collection
+     */
+    public function reset($data = null, $className = '')
+    {
         if ($data == null) {
-            return;
+            return $this;
         }
 
         $this->setClassName($className);
 
         if (is_object($data)) {
             $this->add($data);
-            return;
+            return $this;
         } elseif (is_array($data)) {
-            foreach ($data as $object) {
-                $this->add($object);
-            }
-            return;
+            return $this->addBatch($data);
         }
 
         throw new \InvalidArgumentException(
@@ -56,6 +76,12 @@ class Collection implements ICollection, \Iterator, \Countable
      */
     public function setClassName($className = '')
     {
+        if (!empty($this->elements)) {
+            throw new \LogicException(
+                'Cannot set class name for type hinting if collection is not empty ' . __METHOD__
+            );
+        }
+
         if (!empty($className)) {
             $this->className = $className;
         }
@@ -96,13 +122,7 @@ class Collection implements ICollection, \Iterator, \Countable
      */
     public function add($object)
     {
-        if (!is_object($object)) {
-            throw new \InvalidArgumentException('argument must be object ' . __METHOD__);
-        }
-
-        if (!in_array('getId', get_class_methods($object))) {
-            throw new \InvalidArgumentException('object must have getId() method ' . __METHOD__);
-        };
+        $this->validateObject($object);
 
         if (!empty($this->className)) {
             if (!($object instanceOf $this->className)) {
@@ -112,7 +132,7 @@ class Collection implements ICollection, \Iterator, \Countable
             }
         }
 
-        $this->elements[$object->getId()] = $object;
+        $this->elements[$this->getKeyByObjectId($object)] = $object;
 
         $this->positionMapInitialize();
 
@@ -129,31 +149,85 @@ class Collection implements ICollection, \Iterator, \Countable
 
     public function current()
     {
-        return $this->arrayContainer[$this->position];
+        return $this->arrayContainer[$this->cursor];
     }
 
     public function next()
     {
-        ++$this->position;
+        ++$this->cursor;
     }
 
     public function key()
     {
-        return $this->position;
+        return $this->cursor;
     }
 
     public function valid()
     {
-        return isset($this->arrayContainer[$this->position]);
+        return isset($this->arrayContainer[$this->cursor]);
     }
 
     public function rewind()
     {
-        $this->position = 0;
+        $this->cursor = 0;
     }
 
     protected function positionMapInitialize()
     {
         $this->arrayContainer = array_values($this->elements);
+    }
+
+    /**
+     * @param $object
+     * @param $propertyName
+     * @return bool
+     */
+    protected function publicPropertyExists($object, $propertyName)
+    {
+        $properties = get_object_vars($object);
+        if (empty($properties)) {
+            return false;
+        }
+
+        return in_array($propertyName, array_keys($properties));
+    }
+
+    /**
+     * @param $object
+     * @return mixed
+     */
+    protected function getKeyByObjectId($object)
+    {
+        if ($this->publicPropertyExists($object, 'id')) {
+            return $object->id;
+        } elseif (method_exists($object, 'getId')) {
+            return $object->getId();
+        } elseif (method_exists($object, 'get_id')) {
+            return $object->get_id();
+        }
+
+        throw new \InvalidArgumentException(
+            'object must have public property id or methods getId || get_id' . __METHOD__
+        );
+    }
+
+    /**
+     * @param $object
+     * @return bool
+     */
+    protected function validateObject($object)
+    {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('argument must be object ' . __METHOD__);
+        }
+
+        if (method_exists($object, 'getId') ||
+            method_exists($object, 'get_id') ||
+            $this->publicPropertyExists($object, 'id')
+        ) {
+            return true;
+        };
+
+        throw new \InvalidArgumentException('object must have getId() or get_id() method or public property id ' . __METHOD__);
     }
 }
