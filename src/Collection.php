@@ -4,6 +4,10 @@ namespace SimpleObjectCollection;
 
 class Collection implements ICollection, \Iterator, \Countable
 {
+    use IteratorTrait;
+    use ObjectCheckerTrait;
+    use CountableImplementationTrait;
+
     /** @var array */
     protected $elements = [];
 
@@ -136,67 +140,9 @@ class Collection implements ICollection, \Iterator, \Countable
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->elements);
-    }
-
-    public function current()
-    {
-        return $this->arrayContainer[$this->cursor];
-    }
-
-    public function next()
-    {
-        ++$this->cursor;
-    }
-
-    public function key()
-    {
-        return $this->cursor;
-    }
-
-    public function valid()
-    {
-        return isset($this->arrayContainer[$this->cursor]);
-    }
-
-    public function rewind()
-    {
-        $this->cursor = 0;
-    }
-
     protected function positionMapInitialize()
     {
         $this->arrayContainer = array_values($this->elements);
-    }
-
-    /**
-     * @param $object
-     * @param $propertyName
-     * @return bool
-     */
-    protected function publicPropertyExists($object, $propertyName)
-    {
-        $properties = get_object_vars($object);
-        if (empty($properties)) {
-            return false;
-        }
-
-        return in_array($propertyName, array_keys($properties));
-    }
-
-    /**
-     * @param $object
-     * @param $methodName
-     * @return bool
-     */
-    protected function publicMethodExists($object, $methodName)
-    {
-        return in_array($methodName, get_class_methods($object));
     }
 
     /**
@@ -216,25 +162,5 @@ class Collection implements ICollection, \Iterator, \Countable
         throw new \InvalidArgumentException(
             'object must have public property id or methods getId || get_id' . __METHOD__
         );
-    }
-
-    /**
-     * @param $object
-     * @return bool
-     */
-    protected function validateObject($object)
-    {
-        if (!is_object($object)) {
-            throw new \InvalidArgumentException('argument must be object ' . __METHOD__);
-        }
-
-        if ($this->publicMethodExists($object, 'getId') ||
-            $this->publicMethodExists($object, 'get_id') ||
-            $this->publicPropertyExists($object, 'id')
-        ) {
-            return true;
-        };
-
-        throw new \InvalidArgumentException('object must have getId() or get_id() method or public property id ' . __METHOD__);
     }
 }
