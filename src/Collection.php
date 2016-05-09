@@ -36,7 +36,7 @@ class Collection implements ICollection, \Iterator, \Countable
      * @param object[] $elements
      * @return Collection
      */
-    public function addBatch($elements)
+    public function addBatch(array $elements)
     {
         foreach ($elements as $object) {
             $this->add($object);
