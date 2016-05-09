@@ -5,6 +5,7 @@ namespace lib\Common;
 interface ICollection
 {
     public function setClassName($className);
+
     /**
      * find element by id
      * @param $id
@@ -30,4 +31,17 @@ interface ICollection
      * @return integer
      */
     public function count();
+
+    /**
+     * @param null $data
+     * @param string $className
+     * @return Collection
+     */
+    public function reset($data = null, $className = '');
+
+    /**
+     * @param $elements
+     * @return Collection
+     */
+    public function addBatch($elements);
 }
