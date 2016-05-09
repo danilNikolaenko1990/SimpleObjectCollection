@@ -52,11 +52,13 @@ class Collection implements ICollection, \Iterator, \Countable
      */
     public function reset($data = null, $className = '')
     {
+        $this->elements = [];
+
+        $this->setClassName($className);
+
         if ($data == null) {
             return $this;
         }
-
-        $this->setClassName($className);
 
         if (is_object($data)) {
             $this->add($data);
@@ -76,13 +78,12 @@ class Collection implements ICollection, \Iterator, \Countable
      */
     public function setClassName($className = '')
     {
-        if (!empty($this->elements)) {
-            throw new \LogicException(
-                'Cannot set class name for type hinting if collection is not empty ' . __METHOD__
-            );
-        }
-
         if (!empty($className)) {
+            if (!empty($this->elements)) {
+                throw new \LogicException(
+                    'Cannot set class name for type hinting if collection is not empty ' . __METHOD__
+                );
+            }
             $this->className = $className;
         }
 
@@ -194,6 +195,16 @@ class Collection implements ICollection, \Iterator, \Countable
 
     /**
      * @param $object
+     * @param $methodName
+     * @return bool
+     */
+    protected function publicMethodExists($object, $methodName)
+    {
+        return in_array($methodName, get_class_methods($object));
+    }
+
+    /**
+     * @param $object
      * @return mixed
      */
     protected function getKeyByObjectId($object)
@@ -201,9 +212,9 @@ class Collection implements ICollection, \Iterator, \Countable
         if ($this->publicPropertyExists($object, 'id')) {
             return $object->id;
             //todo переписать, нужно проверять на наличие public методов, а не всех подряд
-        } elseif (method_exists($object, 'getId')) {
+        } elseif ($this->publicMethodExists($object, 'getId')) {
             return $object->getId();
-        } elseif (method_exists($object, 'get_id')) {
+        } elseif ($this->publicMethodExists($object, 'get_id')) {
             return $object->get_id();
         }
 
@@ -222,8 +233,8 @@ class Collection implements ICollection, \Iterator, \Countable
             throw new \InvalidArgumentException('argument must be object ' . __METHOD__);
         }
 
-        if (method_exists($object, 'getId') ||
-            method_exists($object, 'get_id') ||
+        if ($this->publicMethodExists($object, 'getId') ||
+            $this->publicMethodExists($object, 'get_id') ||
             $this->publicPropertyExists($object, 'id')
         ) {
             return true;

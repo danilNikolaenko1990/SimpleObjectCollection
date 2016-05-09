@@ -191,7 +191,20 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $collection->reset($testObjects);
 
-        $this->assertEquals(count($testObjects), $collection->count());
+        $this->assertCount(count($testObjects), $this->getPropertyValue($collection, 'elements'));
+    }
+
+    public function testResetWithoutArgumentsEmptyCollection()
+    {
+        $testObjectsBefore = $this->getTestObjects($quantity = 5);
+
+        $collection = new Collection($testObjectsBefore);
+
+        $this->assertCount($quantity, $this->getPropertyValue($collection, 'elements'));
+
+        $collection->reset();
+
+        $this->assertCount(0, $this->getPropertyValue($collection, 'elements'));
     }
 
     public function testCount()
