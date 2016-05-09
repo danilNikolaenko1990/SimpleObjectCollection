@@ -33,7 +33,7 @@ class Collection implements ICollection, \Iterator, \Countable
     }
 
     /**
-     * @param $elements
+     * @param object[] $elements
      * @return Collection
      */
     public function addBatch($elements)
@@ -133,7 +133,7 @@ class Collection implements ICollection, \Iterator, \Countable
             }
         }
 
-        $this->elements[$this->getKeyByObjectId($object)] = $object;
+        $this->elements[$this->getKeyByObject($object)] = $object;
 
         $this->positionMapInitialize();
 
@@ -146,10 +146,10 @@ class Collection implements ICollection, \Iterator, \Countable
     }
 
     /**
-     * @param $object
-     * @return mixed
+     * @param object $object
+     * @return int
      */
-    protected function getKeyByObjectId($object)
+    protected function getKeyByObject($object)
     {
         if ($this->publicPropertyExists($object, 'id')) {
             return $object->id;
