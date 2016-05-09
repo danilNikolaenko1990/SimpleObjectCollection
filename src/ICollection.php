@@ -1,29 +1,33 @@
 <?php
 
-namespace lib\Common;
+namespace SimpleObjectCollection;
 
 interface ICollection
 {
+    /**
+     * @param $className
+     * @return Collection
+     */
     public function setClassName($className);
 
     /**
      * find element by id
      * @param $id
-     * @return mixed
+     * @return object
      */
     public function find($id);
 
     /**
      * remove element by id
      * @param $id
-     * @return mixed
+     * @return Collection
      */
     public function remove($id);
 
     /**
      * add element
      * @param $object
-     * @return mixed
+     * @return Collection
      */
     public function add($object);
 

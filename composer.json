@@ -1,23 +1,26 @@
 {
-    "name": "danil/collection",
-    "require": {
-        "php": ">=5.4"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~5.0.7"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Daniko",
-            "email": "ndu.spb@list.ru"
-        }
-    ],
-    "autoload-dev": {
-        "classmap": [
-            "tests/TestCase.php",
-            "lib/Common"
-        ]
-    },
-    "minimum-stability": "beta"
+  "name": "ndu/collection",
+  "require": {
+    "php": ">=5.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0.7"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Daniko",
+      "email": "ndu.spb@list.ru"
+    }
+  ],
+  "autoload-dev": {
+    "classmap": [
+      "Tests/TestCase.php",
+      "src/"
+    ]
+  },
+  "psr-0": {
+    "Collection": "src/"
+  },
+  "minimum-stability": "beta"
 }

@@ -1,11 +1,7 @@
 <?php
 
-namespace lib\Common;
+namespace SimpleObjectCollection;
 
-/**
- * Class Collection
- * @package lib\Common
- */
 class Collection implements ICollection, \Iterator, \Countable
 {
     /** @var array */

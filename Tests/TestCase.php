@@ -1,9 +1,8 @@
 <?php
 
-namespace tests;
+namespace Tests\SimpleObjectCollection;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
-use \lib\Common\Collection;
+use SimpleObjectCollection\Collection;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -310,7 +309,9 @@ class TestObject
     {
         return $this->id;
     }
-};
+}
+
+;
 
 
 class WrongTestObject
