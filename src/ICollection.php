@@ -44,7 +44,7 @@ interface ICollection
     public function reset($data = null, $className = '');
 
     /**
-     * @param $elements
+     * @param object[] $elements
      * @return Collection
      */
     public function addBatch($elements);
