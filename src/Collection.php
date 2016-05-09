@@ -22,7 +22,7 @@ class Collection implements ICollection, \Iterator, \Countable
 
     /**
      * collect array of the objects
-     * @param array|object $data
+     * @param object[]|object $data
      * @param string $className
      */
     public function __construct($data = null, $className = '')
@@ -46,7 +46,7 @@ class Collection implements ICollection, \Iterator, \Countable
     }
 
     /**
-     * @param null $data
+     * @param object|object[] $data
      * @param string $className
      * @return Collection
      */
@@ -104,7 +104,7 @@ class Collection implements ICollection, \Iterator, \Countable
     }
 
     /**
-     * @param $id
+     * @param string|int $id
      * @return Collection
      */
     public function remove($id)

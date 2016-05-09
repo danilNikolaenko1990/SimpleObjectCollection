@@ -5,28 +5,28 @@ namespace SimpleObjectCollection;
 interface ICollection
 {
     /**
-     * @param $className
+     * @param string $className
      * @return Collection
      */
     public function setClassName($className);
 
     /**
      * find element by id
-     * @param $id
+     * @param int|string $id
      * @return object
      */
     public function find($id);
 
     /**
      * remove element by id
-     * @param $id
+     * @param int|string $id
      * @return Collection
      */
     public function remove($id);
 
     /**
      * add element
-     * @param $object
+     * @param object $object
      * @return Collection
      */
     public function add($object);
@@ -37,7 +37,7 @@ interface ICollection
     public function count();
 
     /**
-     * @param null $data
+     * @param object|object[] $data
      * @param string $className
      * @return Collection
      */
